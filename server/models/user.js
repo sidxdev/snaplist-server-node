@@ -1,5 +1,7 @@
-var mongoose = require('mongoose');
+var mongoose = require('./db.js');
+
 var Schema = mongoose.Schema;
+
 
 var schema = new Schema({
   name: {
@@ -18,8 +20,9 @@ var schema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'List'
   }]
-});
+}, { collection : "User"});
 
-var User = mongoose.model('User', schema);
+var User = mongoose.model('User', schema, 'User');
+
 
 module.exports = User;

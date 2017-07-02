@@ -1,7 +1,18 @@
-var mongoose = require('mongoose');
+var mongoose = require('./db.js');
+var common = require('../libs/common.js');
+
 var Schema = mongoose.Schema;
 
+
 var schema = new Schema({
+  title: {
+    type: String,
+    required: true
+  },
+  shareCode: {
+    type: String,
+    default: common.genUUIDv4
+  },
   items: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Item'
@@ -12,10 +23,11 @@ var schema = new Schema({
   }],
   dateCreated: {
     type: Date,
-    required: true
+    default: Date.now
   }
-});
+}, { collection : 'List'});
 
-var List = mongoose.model('List', schema);
+var List = mongoose.model('List', schema, 'List');
+
 
 module.exports = List;

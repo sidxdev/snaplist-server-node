@@ -1,5 +1,7 @@
-var mongoose = require('mongoose');
+var mongoose = require('./db.js');
+
 var Schema = mongoose.Schema;
+
 
 var schema = new Schema({
   title: {
@@ -11,8 +13,9 @@ var schema = new Schema({
     type: Date,
     required: true
   }
-});
+}, { collection : 'Item'});
 
-var Item = mongoose.model('Item', schema);
+var Item = mongoose.model('Item', schema, 'Item');
+
 
 module.exports = Item;
