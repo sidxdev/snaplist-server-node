@@ -23,6 +23,7 @@ var schema = new Schema({
 }, { collection : "User"});
 
 var User = mongoose.model('User', schema, 'User');
-
+// For cast
+User.ObjectId = mongoose.Types.ObjectId;
 
 module.exports = User;

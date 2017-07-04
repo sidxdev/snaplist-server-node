@@ -4,17 +4,25 @@ var dotenv = require('dotenv')
 // Load dotenv
 dotenv.load();
 
-var userRoute = require('./server/api/user.js');
-var listRoute = require('./server/api/list.js');
-
 var app = express();
+const _SERVER_PORT = process.env.SERVER_PORT || 3000;
 
 // API is JSON only
 app.use(bodyParser.json());
 // Add API routes
-app.use('/api/user', userRoute);
-app.use('/api/list', listRoute);
+app.use('/api/user', require('./server/api/user.js'));
+app.use('/api/list', require('./server/api/list.js'));
+// Catch errors in event loop
+app.use(function(err, req, res, next) {
+  console.log(err);
+  switch(err.constructor) {
+    case SyntaxError:
+      res.json({'err':'Malformed JSON Request body.'});
+    default:
+      res.json({'err':err.message});
+  }
+});
 
-app.listen(process.env.SERVER_PORT || 3000, function () {
-  console.log('Example app listening on port 3000 from the Mac!');
+app.listen(_SERVER_PORT, function () {
+  console.log('Server started on port ' + _SERVER_PORT);
 });

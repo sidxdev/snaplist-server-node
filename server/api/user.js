@@ -21,12 +21,11 @@ router.post('/', function(req, res, next) {
   newUser.save(function(err) {
     if(err) {
       // Return error on DB error
-      res.json({"err" : err});
-      return next(err);
+      return res.json({"err" : err});
     }
   }).then(function(user){
     console.log("User created with id: " + user._id);
-    res.json({"id" : user._id});
+    return res.json({"id" : user._id});
   });
 });
 
@@ -34,53 +33,53 @@ router.post('/', function(req, res, next) {
 router.route('/:id')
   // Get User
   .get(function(req, res, next) {
-    User.findOne(req.body.id, function(err, user) {
+    User.findOne({_id:req.params.id}, function(err, user) {
       if(err) {
-        res.json({"err" : err});
-        return next(err);
+        return res.json({"err" : err});
       } else {
         if(user === null) {
-          res.json({"err" : "User not found"});
+          return res.json({"err" : "User not found"});
         } else {
-          res.json({"user" : user});
+          return res.json({"user" : user});
         }
       }
       });
   })
   // Update User
   .put(function(req, res, next){
-    User.findOne(req.body.id, function(err, user) {
-      if (err) {
-        res.json({"err" : err});
-        return next(err);
-      } else {
-        var update = false;
-        // Update individual properties
-        if(req.body.hasOwnProperty("name")) {
-          user.name = req.body.name;
-          update = true;
-        }
-        if(req.body.hasOwnProperty("email")) {
-          user.email = req.body.email;
-          update = true;
-        }
-        // Trigger DB update only if required
-        user.save(function(err) {
-          if(err) {
-            // Return error on DB error
-            res.json({"err" : err});
-            return next(err);
+    var update = false;
+    // Update individual properties
+    if(req.body.hasOwnProperty("name") || req.body.hasOwnProperty("email")) {
+      User.findOne({_id:req.params.id}, function(err, user) {
+        if (err) {
+          res.json({"err" : err});
+          return next(err);
+        } else {
+          if(req.body.hasOwnProperty("name")) {
+            user.name = req.body.name;
           }
-        }).then(function(updatedUser) {
-          console.log("User updated with id: " + updatedUser._id);
-          res.json(updatedUser);
-        });
-      }
-    });
+          if(req.body.hasOwnProperty('email')) {
+            user.email = req.body.email;
+          }
+          user.save(function(err) {
+            if(err) {
+              // Return error on DB error
+              res.json({"err" : err});
+              return next(err);
+            }
+          }).then(function(updatedUser) {
+            console.log("User updated with id: " + updatedUser._id);
+            res.json(updatedUser);
+          });
+        }
+      });
+    } else {
+      return res.json({ 'err' : 'At least one parameter is required: [email, name]'});
+    }
   })
   // Delete User
   .delete(function(req, res, next){
-    User.findOneAndRemove(req.body.id, function(err, user) {
+    User.findOneAndRemove({_id:req.params.id}, function(err, user) {
       if(err) {
         // Return error on DB error
         res.json({"err" : err});

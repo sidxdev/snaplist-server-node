@@ -11,11 +11,14 @@ var schema = new Schema({
   content: String,
   dateCreated: {
     type: Date,
-    required: true
+    default: Date.now
   }
-}, { collection : 'Item'});
+});
 
-var Item = mongoose.model('Item', schema, 'Item');
-
+var Item = mongoose.model('Item', schema);
+// For embedding
+Item.schema = schema;
+// For cast
+Item.ObjectId = mongoose.Types.ObjectId;
 
 module.exports = Item;
