@@ -1,4 +1,5 @@
 var mongoose = require('./db.js');
+var Item = require('./item.js');
 var common = require('../libs/common.js');
 
 var Schema = mongoose.Schema;
@@ -13,10 +14,7 @@ var schema = new Schema({
     type: String,
     default: common.genUUIDv4
   },
-  items: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Item'
-  }],
+  items: [Item.schema],
   users: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
@@ -28,6 +26,7 @@ var schema = new Schema({
 }, { collection : 'List'});
 
 var List = mongoose.model('List', schema, 'List');
-
+// For cast
+List.ObjectId = mongoose.Types.ObjectId;
 
 module.exports = List;
