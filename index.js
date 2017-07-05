@@ -5,7 +5,7 @@ var dotenv = require('dotenv')
 dotenv.load();
 
 var app = express();
-const _SERVER_PORT = process.env.SERVER_PORT || 3000;
+const _SERVER_PORT = process.env.PORT || 3000;
 
 // API is JSON only
 app.use(bodyParser.json());
