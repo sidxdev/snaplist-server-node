@@ -9,6 +9,7 @@ router = express.Router();
 
 // Create Route
 router.post('/', function(req, res, next) {
+  console.log(req.body);
   if(!reqHelper.parametersExist(["name", "email", "password"], "Parameters are required: ", req, res)) {
     return next();
   }
