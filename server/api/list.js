@@ -153,9 +153,15 @@ router.delete('/:listId/user/:userId', function(req, res, next) {
               if(err) {
                 return res.json({'err':err});
               } else {
-                console.log('User: ' + user._id + ' removed from List: ' + list._id);
                 console.log('List deleted: ' + list._id);
-                return res.json({'id':delList._id});
+                user.save(function(err, updatedUser) {
+                  if(err) {
+                    return res.json({ 'err' : err });
+                  } else {
+                    console.log('User: ' + user._id + ' removed from List: ' + list._id);
+                    return res.json({'id':delList._id});
+                  }
+                });
               }
             });
           } else {
