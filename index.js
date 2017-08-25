@@ -12,6 +12,7 @@ const _SERVER_PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(cors());
 // Add API routes
+app.use('/api/auth', require('./server/api/auth.js'));
 app.use('/api/user', require('./server/api/user.js'));
 app.use('/api/list', require('./server/api/list.js'));
 // Catch errors in event loop
