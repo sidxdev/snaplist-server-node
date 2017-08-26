@@ -5,6 +5,7 @@ var List = require('../models/list.js');
 var User = require('../models/user.js');
 var Item = require('../models/item.js');
 var reqHelper = require('../libs/request.js');
+var appSocket = require('../libs/app-socket.js');
 
 router = express.Router();
 
@@ -208,6 +209,7 @@ router.post('/:id/item', function(req, res, next) {
           return res.json({ 'err' : err});
         } else {
           console.log('Create item in List: ' + list._id);
+          appSocket.updateList(updatedList);
           return res.json(updatedList);
         }
       });
@@ -280,6 +282,7 @@ router.route('/:listId/item/:itemId')
             return res.json({ 'err' : err});
           } else {
             console.log('Deleted Item: ' + req.params.itemId + ' in List: ' + list._id);
+            appSocket.updateList(updatedList);
             return res.json(updatedList);
           }
         });

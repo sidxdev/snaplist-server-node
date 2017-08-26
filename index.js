@@ -2,11 +2,17 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var dotenv = require('dotenv');
 var cors = require('cors');
+var io = require('socket.io');
+const redis = require('redis-server');
 // Load dotenv
 dotenv.load();
 
 var app = express();
 const _SERVER_PORT = process.env.PORT || 3000;
+const _REDIS_PORT = process.env.REDIS_PORT || 6379;
+// Start redis server
+const redisServer = new redis(_REDIS_PORT);
+redisServer.open();
 
 // API is JSON only
 app.use(bodyParser.json());
@@ -26,6 +32,11 @@ app.use(function(err, req, res, next) {
   }
 });
 
-app.listen(_SERVER_PORT, function () {
+// Start server
+var server = app.listen(_SERVER_PORT, function () {
   console.log('Server started on port ' + _SERVER_PORT);
 });
+
+// Setup socket.io
+io = io(server);
+var appSocket = require('./server/libs/app-socket.js').init(io);
