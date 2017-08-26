@@ -3,16 +3,11 @@ var bodyParser = require('body-parser');
 var dotenv = require('dotenv');
 var cors = require('cors');
 var io = require('socket.io');
-const redis = require('redis-server');
 // Load dotenv
 dotenv.load();
 
 var app = express();
 const _SERVER_PORT = process.env.PORT || 3000;
-const _REDIS_PORT = process.env.REDIS_PORT || 6379;
-// Start redis server
-const redisServer = new redis(_REDIS_PORT);
-redisServer.open();
 
 // API is JSON only
 app.use(bodyParser.json());
