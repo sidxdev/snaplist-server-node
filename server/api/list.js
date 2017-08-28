@@ -176,7 +176,7 @@ router.delete('/:listId/user/:userId', function(req, res, next) {
                     return res.json({ 'err' : err });
                   } else {
                     console.log('User: ' + user._id + ' removed from List: ' + list._id);
-                    return res.json(updatedList);
+                    return res.json({'id':updatedList._id});
                   }
                 });
               }
