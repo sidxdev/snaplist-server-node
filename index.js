@@ -1,6 +1,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var dotenv = require('dotenv')
+var userEndpoint = require('./server/api/user.js');
+var listEndpoint = require('./server/api/list.js');
 // Load dotenv
 dotenv.load();
 
@@ -10,8 +12,8 @@ const _SERVER_PORT = process.env.PORT || 3000;
 // API is JSON only
 app.use(bodyParser.json());
 // Add API routes
-app.use('/api/user', require('./server/api/user.js'));
-app.use('/api/list', require('./server/api/list.js'));
+app.use('/api/user', userEndpoint);
+app.use('/api/list', listEndpoint);
 // Catch errors in event loop
 app.use(function(err, req, res, next) {
   console.log(err);
