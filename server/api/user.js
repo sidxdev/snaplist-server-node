@@ -9,23 +9,36 @@ router = express.Router();
 
 // Create Route
 router.post('/', function(req, res, next) {
+  console.log(req.body);
   if(!reqHelper.parametersExist(["name", "email", "password"], "Parameters are required: ", req, res)) {
     return next();
   }
-  var newUser = new User({
-    name: req.body.name,
-    email: req.body.email,
-    hash: crypto.createHash("md5").update(req.body.password).digest("hex")
-  });
-  // Attempt save in DB
-  newUser.save(function(err) {
+  // Check for existing email
+  User.findOne({email: req.body.email} , function(err, user) {
     if(err) {
       // Return error on DB error
       return res.json({"err" : err});
+    } else if (user) {
+      res.json({'err' : 'User with email ' + req.body.email + ' already exists.'});
+      return next();
+    } else {
+      // Go ahead & create a new user
+      var newUser = new User({
+        name: req.body.name,
+        email: req.body.email,
+        hash: crypto.createHash("md5").update(req.body.password).digest("hex")
+      });
+      // Attempt save in DB
+      newUser.save(function(err) {
+        if(err) {
+          // Return error on DB error
+          return res.json({"err" : err});
+        }
+      }).then(function(user){
+        console.log("User created with id: " + user._id);
+        return res.json({"id" : user._id});
+      });
     }
-  }).then(function(user){
-    console.log("User created with id: " + user._id);
-    return res.json({"id" : user._id});
   });
 });
 
